@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f9f9f9;
+    }
+    
+    .mind-map {
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    .center-node {
+      background-color: #3498db;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 50px;
+      font-weight: bold;
+      text-align: center;
+      position: relative;
+      cursor: pointer;
+      z-index: 2;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .branches {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 50px;
+    }
+    
+    .branch {
+      width: 30%;
+      min-width: 250px;
+      margin: 0 10px 30px;
+    }
+    
+    .branch-title {
+      background-color: #2ecc71;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 30px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 15px;
+      position: relative;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .sub-branch {
+      background-color: #f1c40f;
+      color: #333;
+      padding: 8px 12px;
+      border-radius: 20px;
+      margin: 10px 0;
+      text-align: center;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .explanation-box {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      max-width: 600px;
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      z-index: 10;
+    }
+    
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #333;
+    }
+    
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      z-index: 5;
+    }
+    
+    h3 {
+      margin-top: 0;
+      color: #2c3e50;
+      border-bottom: 2px solid #ecf0f1;
+      padding-bottom: 10px;
+    }
+    
+    .info-content {
+      line-height: 1.6;
+    }
+    
+    .highlight {
+      font-weight: bold;
+      color: #e74c3c;
+    }
+  </style>
+</head>
+<body>
+  <div class="mind-map">
+    <div>
+      <div class="center-node" onclick="showExplanation('statistical-inference')">Statistical Inference</div>
+      
+      <div class="branches">
+        <div class="branch">
+          <div class="branch-title" onclick="showExplanation('bayesianism')">Bayesianism</div>
+          <div class="sub-branch" onclick="showExplanation('bayes-theorem')">Bayes' Theorem</div>
+          <div class="sub-branch" onclick="showExplanation('prior-likelihood-posterior')">Prior, Likelihood, Posterior</div>
+          <div class="sub-branch" onclick="showExplanation('base-rate-fallacy')">Base Rate Fallacy</div>
+        </div>
+        
+        <div class="branch">
+          <div class="branch-title" onclick="showExplanation('frequentism')">Frequentism</div>
+          <div class="sub-branch" onclick="showExplanation('hypothesis-testing')">Hypothesis Testing</div>
+          <div class="sub-branch" onclick="showExplanation('type-errors')">Type I &amp; Type II Errors</div>
+          <div class="sub-branch" onclick="showExplanation('p-values')">P-values</div>
+        </div>
+        
+        <div class="branch">
+          <div class="branch-title" onclick="showExplanation('integration-ml')">Integration in ML</div>
+          <div class="sub-branch" onclick="showExplanation('empirical-bayes')">Empirical Bayes</div>
+          <div class="sub-branch" onclick="showExplanation('pac-bayes')">PAC-Bayes Theory</div>
+          <div class="sub-branch" onclick="showExplanation('two-cultures')">Two Cultures</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="overlay" id="overlay" onclick="hideExplanation()"></div>
+  
+  <div class="explanation-box" id="explanation-box">
+    <button class="close-btn" onclick="hideExplanation()">×</button>
+    <h3 id="explanation-title">Title</h3>
+    <div class="info-content" id="explanation-content">Content goes here</div>
+  </div>
+  
+  <script>
+    const explanations = {
+      'statistical-inference': {
+        title: 'Statistical Inference',
+        content: `<ul>
+          <li><span class="highlight">Statistical inference</span> provides frameworks for reasoning under uncertainty - making decisions with <span class="highlight">incomplete or imperfect information</span>.</li>
+          <li>Unlike <span class="highlight">deductive logic</span> which provides certainty, <span class="highlight">statistical inference</span> deals with probabilistic reasoning essential for real-world problems like <span class="highlight">medical diagnoses</span>, <span class="highlight">weather predictions</span>, and <span class="highlight">machine learning</span>.</li>
+          <li>The two main approaches are <span class="highlight">Bayesianism</span> (belief updating) and <span class="highlight">frequentism</span> (error minimization).</li>
+        </ul>`
+      },
+      'bayesianism': {
+        title: 'Bayesianism',
+        content: `<ul>
+          <li><span class="highlight">Bayesianism</span>, developed primarily by <span class="highlight">Pierre-Simon Laplace</span> (though named after <span class="highlight">Thomas Bayes</span>), is a formal approach to modeling rational belief.</li>
+          <li>It provides a <span class="highlight">mathematical framework</span> for updating beliefs in light of <span class="highlight">new evidence</span>.</li>
+          <li>In <span class="highlight">machine learning</span>, Bayesian methods are used for <span class="highlight">parameter estimation</span>, <span class="highlight">model selection</span>, and quantifying <span class="highlight">uncertainty</span>.</li>
+          <li>The approach is characterized by its use of <span class="highlight">prior probabilities</span> and <span class="highlight">likelihoods</span> to derive <span class="highlight">posterior probabilities</span>.</li>
+        </ul>`
+      },
+      'bayes-theorem': {
+        title: "Bayes' Theorem",
+        content: `<ul>
+          <li><span class="highlight">Bayes' Theorem</span> is the mathematical foundation of Bayesian inference, given by: <span class="highlight">P(h|e) = [P(e|h) × P(h)] / P(e)</span>, where <span class="highlight">h</span> is a hypothesis and <span class="highlight">e</span> is evidence.</li>
+          <li>In words: <span class="highlight">Posterior ∝ Likelihood × Prior</span>.</li>
+          <li>This formula shows how to optimally combine <span class="highlight">background knowledge (prior)</span> with <span class="highlight">new evidence (through the likelihood)</span> to update our <span class="highlight">beliefs (posterior)</span>.</li>
+          <li>This theorem is fundamental in <span class="highlight">machine learning</span> for tasks like <span class="highlight">classification</span> and <span class="highlight">parameter estimation</span>.</li>
+        </ul>`
+      },
+      'prior-likelihood-posterior': {
+        title: 'Prior, Likelihood, Posterior',
+        content: `<ul>
+          <li>The three key components of <span class="highlight">Bayesian inference</span> are:</li>
+          <ul>
+            <li><span class="highlight">Prior P(h)</span>: Initial probability assigned to hypothesis h before considering evidence.</li>
+            <li><span class="highlight">Likelihood P(e|h)</span>: Probability of observing evidence e if hypothesis h is true.</li>
+            <li><span class="highlight">Posterior P(h|e)</span>: Updated probability of hypothesis h after observing evidence e.</li>
+            <li><span class="highlight">Marginal Likelihood P(e)</span>: Total probability of evidence across all hypotheses, acts as a normalizing constant.</li>
+          </ul>
+          <li>In <span class="highlight">machine learning</span>, these concepts map to <span class="highlight">initial model assumptions</span>, how well data fits the model, and <span class="highlight">updated model beliefs</span>.</li>
+        </ul>`
+      },
+      'base-rate-fallacy': {
+        title: 'Base Rate Fallacy',
+        content: `<ul>
+          <li>The <span class="highlight">base rate fallacy</span> occurs when people ignore the <span class="highlight">prior probability (base rate)</span> when making judgments.</li>
+          <li>The rare disease example demonstrates this: A disease with <span class="highlight">0.1% prevalence</span> and a <span class="highlight">99% accurate test</span> yields only about <span class="highlight">9% probability</span> of having the disease after testing positive, not 99% as many intuitively guess.</li>
+          <li>This demonstrates how ignoring priors leads to drastically incorrect probability assessments—a crucial insight for <span class="highlight">medical diagnoses</span>, <span class="highlight">anomaly detection</span>, and other <span class="highlight">ML applications</span>.</li>
+        </ul>`
+      },
+      'frequentism': {
+        title: 'Frequentism',
+        content: `<ul>
+          <li><span class="highlight">Frequentism</span> interprets probabilities as limiting frequencies in repeated experiments, not as degrees of belief.</li>
+          <li>Developed by statisticians like <span class="highlight">Neyman</span> and <span class="highlight">Pearson</span>, this approach focuses on controlling long-run error rates in hypothesis testing.</li>
+          <li>Frequentist methods are widespread in scientific research and <span class="highlight">machine learning evaluation</span>, where the goal is to establish <span class="highlight">statistical significance</span> or control <span class="highlight">false discovery rates</span>.</li>
+        </ul>`
+      },
+      'hypothesis-testing': {
+        title: 'Hypothesis Testing',
+        content: `<ul>
+          <li><span class="highlight">Null Hypothesis Significance Testing (NHST)</span> involves testing a <span class="highlight">null hypothesis (H₀)</span> against an <span class="highlight">alternative hypothesis (H₁)</span>.</li>
+          <li>The process involves:</li>
+          <ul>
+            <li>Setting up <span class="highlight">null and alternative hypotheses</span></li>
+            <li>Choosing a <span class="highlight">test statistic</span> and <span class="highlight">significance level (α)</span></li>
+            <li>Computing the <span class="highlight">test statistic</span> from data</li>
+            <li>Determining if the result falls in the <span class="highlight">rejection region</span></li>
+          </ul>
+          <li>The goal is to minimize <span class="highlight">Type II error (false negatives)</span> while controlling <span class="highlight">Type I error (false positives)</span>.</li>
+          <li>This framework underlies many evaluation methodologies in <span class="highlight">machine learning</span>, including <span class="highlight">A/B testing</span> and <span class="highlight">model comparison</span>.</li>
+        </ul>`
+      },
+      'type-errors': {
+        title: 'Type I & Type II Errors',
+        content: `<ul>
+          <li>In hypothesis testing, two types of errors can occur:</li>
+          <ul>
+            <li><span class="highlight">Type I Error (False Positive)</span>: Incorrectly rejecting a true null hypothesis (finding an effect when none exists).</li>
+            <li><span class="highlight">Type II Error (False Negative)</span>: Failing to reject a false null hypothesis (missing a real effect).</li>
+          </ul>
+          <li>The rate of <span class="highlight">Type I errors</span> is controlled by setting <span class="highlight">α (typically 0.05)</span>, while minimizing <span class="highlight">Type II errors</span> (increasing power) is achieved through larger sample sizes or more sensitive tests.</li>
+          <li>This trade-off is analogous to <span class="highlight">precision vs. recall</span> in <span class="highlight">machine learning classification tasks</span>.</li>
+        </ul>`
+      },
+      'p-values': {
+        title: 'P-values',
+        content: `<ul>
+          <li>A <span class="highlight">p-value</span> represents the probability of observing data at least as extreme as what was actually observed, assuming the <span class="highlight">null hypothesis</span> is true.</li>
+          <li>In the biased coin example, getting 21 heads in 30 flips yields a <span class="highlight">p-value of approximately 0.043</span>, indicating the result is statistically significant at <span class="highlight">α = 0.05</span>.</li>
+          <li><span class="highlight">P-values</span> are widely used but often misinterpreted – they don't represent the probability that the <span class="highlight">null hypothesis</span> is true, but rather the probability of observing such extreme data if the null were true.</li>
+          <li>In <span class="highlight">ML</span>, p-values often appear in <span class="highlight">model evaluation</span> and <span class="highlight">hypothesis testing</span> about model performance.</li>
+        </ul>`
+      },
+      'integration-ml': {
+        title: 'Integration in Machine Learning',
+        content: `<ul>
+          <li>Modern <span class="highlight">machine learning</span> increasingly bridges <span class="highlight">Bayesian</span> and <span class="highlight">frequentist</span> approaches.</li>
+          <li>Many classical inference problems can be reframed as <span class="highlight">prediction tasks</span>.</li>
+          <li>Contemporary approaches include <span class="highlight">prediction-powered inference</span>, <span class="highlight">simulation-based inference</span>, and <span class="highlight">test martingales</span> that combine frequentist optimality with Bayesian factors.</li>
+          <li><span class="highlight">ML</span> tends to focus more on <span class="highlight">predictive performance</span> (the algorithmic modeling culture) while still incorporating statistical principles from both traditions.</li>
+        </ul>`
+      },
+      'empirical-bayes': {
+        title: 'Empirical Bayes',
+        content: `<ul>
+          <li><span class="highlight">Empirical Bayes methods</span> provide a compromise between <span class="highlight">Bayesian</span> and <span class="highlight">frequentist approaches</span> by using the data itself to estimate <span class="highlight">prior distributions</span> rather than specifying them in advance.</li>
+          <li>This approach allows for <span class="highlight">"data-driven priors"</span> and addresses one of the main criticisms of Bayesian methods (<span class="highlight">subjective priors</span>) while maintaining the benefits of Bayesian inference.</li>
+          <li>In <span class="highlight">machine learning</span>, empirical Bayes is used for tasks like <span class="highlight">multi-task learning</span>, <span class="highlight">transfer learning</span>, and <span class="highlight">regularization</span>.</li>
+        </ul>`
+      },
+      'pac-bayes': {
+        title: 'PAC-Bayes Theory',
+        content: `<ul>
+          <li><span class="highlight">PAC-Bayes</span> (Probably Approximately Correct-Bayes) learning theory combines <span class="highlight">PAC learning</span> (a frequentist framework with performance guarantees) with Bayesian inference.</li>
+          <li>It provides theoretical bounds on the <span class="highlight">generalization error</span> of learning algorithms by taking a <span class="highlight">prior distribution</span> over hypotheses and updating it to a <span class="highlight">posterior</span> based on training data.</li>
+          <li>This framework is particularly valuable in <span class="highlight">ML</span> for understanding <span class="highlight">generalization capabilities</span> and <span class="highlight">over-fitting</span>, offering theoretical guarantees with practical Bayesian methods.</li>
+        </ul>`
+      },
+      'two-cultures': {
+        title: 'Two Cultures',
+        content: `<ul>
+          <li><span class="highlight">Leo Breiman</span> described "two cultures" in statistical modeling:</li>
+          <ul>
+            <li>1. <span class="highlight">Data modeling culture</span>: Assumes data is generated by a given stochastic model (traditional statistics).</li>
+            <li>2. <span class="highlight">Algorithmic modeling culture</span>: Treats the data mechanism as unknown and focuses on <span class="highlight">predictive accuracy</span> (<span class="highlight">machine learning</span>).</li>
+          </ul>
+          <li>Modern <span class="highlight">ML</span> increasingly bridges these approaches, using algorithmic techniques while incorporating statistical inference principles. The integration of these cultures provides both <span class="highlight">predictive power</span> and <span class="highlight">interpretability</span>—crucial for deploying ML in high-stakes domains.</li>
+        </ul>`
+      }
+    };
+
+    function showExplanation(concept) {
+      document.getElementById('explanation-title').textContent = explanations[concept].title;
+      document.getElementById('explanation-content').innerHTML = explanations[concept].content;
+      document.getElementById('explanation-box').style.display = 'block';
+      document.getElementById('overlay').style.display = 'block';
+    }
+    
+    function hideExplanation() {
+      document.getElementById('explanation-box').style.display = 'none';
+      document.getElementById('overlay').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
